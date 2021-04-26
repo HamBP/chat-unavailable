@@ -23,7 +23,7 @@ router.post('/request', async (req, res, next) => {
 // 위에서 전달한 모달 폼의 submit 요청을 받는 라우터.
 // JSON 타입으로 { result: true }를 응답에 돌려주면 됨(?).
 router.post('/callback', async (req, res, next) => {
-    const result = await controller.processFormSubmit(req.body);
+    const result = await controller.processModalFormSubmit(req.body);
 
     return res.json({ result });
 });

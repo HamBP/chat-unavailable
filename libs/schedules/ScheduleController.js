@@ -1,50 +1,27 @@
+const service = require('./ScheduleService');
 const Schedule = require('./Schedule');
-const libKakaoWork = require('../kakaoWork');
-const scheduleRepository = require('./ScheduleRepository');
 
 class ScheduleConroller {
-    /**
-     * 맨 처음에 사용자에게 메시지를 보냅니다.
-     */
     async sendInitialMessage() {
-        // 유저 목록 검색 (1)
-        const users = await libKakaoWork.getUserList();
-
-        // 검색된 모든 유저에게 각각 채팅방 생성 (2)
-        const conversations = await Promise.all(
-            users.map((user) => libKakaoWork.openConversations({ userId: user.id }))
-        );
-
-        // 생성된 채팅방에 메세지 전송 (3)
-        const messages = await Promise.all([
-            conversations.map((conversation) =>
-                libKakaoWork.sendMessage({
-                    conversationId: conversation.id,
-                    text: '환영합니다.',
-                    blocks: [
-                        {
-                            type: 'text',
-                            text: '일정을 등록해 보세요!',
-                            markdown: false,
-                        },
-                        {
-                            type: 'button',
-                            text: '설정하기',
-                            style: 'default',
-                            action_type: 'call_modal',
-                            value: 'set_datetime',
-                        },
-                    ],
-                })
-            ),
-        ]);
+        await service.broadcastMessage({
+            text: '환영합니다.',
+            blocks: [
+                {
+                    type: 'text',
+                    text: '일정을 등록해 보세요!',
+                    markdown: false,
+                },
+                {
+                    type: 'button',
+                    text: '설정하기',
+                    style: 'default',
+                    action_type: 'call_modal',
+                    value: 'set_datetime',
+                },
+            ],
+        });
     }
 
-    /**
-     * 적절한 모달 폼 내용을 생성합니다.
-     *
-     * @return 폼 내용이 될 객체. 스트링 아님! 객체임!
-     */
     createModalFormContent({ message, value }) {
         const formType = value;
 
@@ -86,12 +63,7 @@ class ScheduleConroller {
         };
     }
 
-    /**
-     * 사용자의 모달 폼 제출을 처리합니다.
-     *
-     * @return 성공 여부. (근데 항상 true로 성공임 ㅎㅎ)
-     */
-    async processFormSubmit(requestBody) {
+    async processModalFormSubmit(requestBody) {
         const formType = requestBody.value;
 
         switch (formType) {
@@ -106,69 +78,15 @@ class ScheduleConroller {
         try {
             const newSchedule = new Schedule(actions.title, actions.datetime);
 
-            await this._saveSchedule(newSchedule);
-            await this._sendScheduleCompletedMessage(message.conversation_id, newSchedule);
+            await service.saveSchedule(newSchedule);
+			await service.sendScheduleAddedMessage(message.conversation_id, newSchedule);
 
             return true;
         } catch (e) {
-            await this._sendFailedToAddScheduleMessage(message.conversation_id);
+            await service.sendFailedToAddScheduleMessage(message.conversation_id);
 
             return false;
         }
-    }
-
-    async _saveSchedule(schedule) {
-        await scheduleRepository.saveSchedule(schedule);
-    }
-
-    async _sendScheduleCompletedMessage(conversationId, schedule) {
-        await libKakaoWork.sendMessage({
-            conversationId: conversationId,
-            text: '일정이 설정되었습니다.',
-            blocks: [
-                {
-                    type: 'header',
-                    text: '일정이 저장되었습니다.',
-                    style: 'blue',
-                },
-                {
-                    type: 'text',
-                    text: schedule.title,
-                    markdown: true,
-                },
-                {
-                    type: 'description',
-                    term: '일시',
-                    content: {
-                        type: 'text',
-                        text: schedule.datetime.format('YY/MM/DD HH:mm'),
-                        markdown: false,
-                    },
-                    accent: true,
-                },
-            ],
-        });
-    }
-	
-	async _sendFailedToAddScheduleMessage(conversationId) {
-        await libKakaoWork.sendMessage({
-            conversationId: conversationId,
-            text: '일정 설정 실패!!!!!!!!!!.',
-            blocks: [
-                {
-                    type: 'header',
-                    text: '이사람아 그렇게 쓰면 안되지!!!!.',
-                    style: 'blue',
-                },
-                {
-                    type: 'button',
-                    text: '다시하기',
-                    style: 'default',
-                    action_type: 'call_modal',
-                    value: 'set_datetime',
-                },
-            ],
-        });
     }
 }
 

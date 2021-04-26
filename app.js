@@ -5,6 +5,10 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const index = require('./routes/index');
 
+// 중요!!!!!!!!!!!
+const moment = require("moment-timezone");
+moment.tz.setDefault("Asia/Seoul");
+
 const app = express();
 
 app.use(logger('dev'));
@@ -34,5 +38,15 @@ app.use(function(err, req, res, next) {
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+
+// 쨘 /////////////////////////////////////////////////////////////////////////////////
+const scheduleService = require('./libs/schedules/ScheduleService');
+
+setInterval(async () => {
+	await scheduleService.sendScheduleNotifications();
+}, 5000);
+//////////////////////////////////////////////////////////////////////////////////////
+
 
 module.exports = app;

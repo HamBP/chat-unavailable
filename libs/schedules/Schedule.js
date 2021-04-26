@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 class Schedule {
 	constructor(title, datetimeString) {
@@ -23,10 +23,14 @@ class Schedule {
 	}
 		
 	isIncoming(paddingMinutes/*몇분 전에 알릴까요*/=10) {
-		const now = moment(); 
-		const eventNotificationTiming = this.datetime.subtract(paddingMinutes, 'minutes');
+		const now = moment();
+		const eventNotificationTiming = moment(this.datetime).subtract(paddingMinutes, 'minutes');
 		
 		return now.isAfter(eventNotificationTiming) && now.isBefore(this.datetime);
+	}
+	
+	datetimeString() {
+		return this.datetime.format('YY/MM/DD HH:mm');
 	}
 }
 

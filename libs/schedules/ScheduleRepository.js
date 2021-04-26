@@ -8,8 +8,12 @@ class ScheduleRepository {
 		this.schedules.push(schedule);
 	}
 	
-	getIncommingSchedules() {
-		return this.schedules.filter((s) => s.isIncoming());
+	getIncommingUnnotifiedSchedules() {
+		return this.schedules.filter((s) => s.isIncoming() && !s.isNotified);
+	}
+	
+	markScheduleNotified(schedule) {
+		schedule.isNotified = true;
 	}
 }
 
