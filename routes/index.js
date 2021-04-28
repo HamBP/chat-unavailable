@@ -109,6 +109,7 @@ router.post("/callback", async (req, res, next) => {
   const { message, actions, action_time, value,react_user_id } = req.body;
 
   const result = await gameDB.gameUserByKakaoId(react_user_id)
+  console.log(result.gameUser);
   const { score, successUpgrade } = result.gameUser
 
   switch (value) {
@@ -118,9 +119,9 @@ router.post("/callback", async (req, res, next) => {
         text: "☆★우승시 기프티콘을 드립니다★☆",
         blocks: block.main(score, successUpgrade),
       });
-      break;
+      break; 
+
     case "attendance":
-      
       const result = await gameDB.gameUserAttendanceCheck({kakaoUserId:react_user_id})
       if(result.ok){
         await libKakaoWork.sendMessage({

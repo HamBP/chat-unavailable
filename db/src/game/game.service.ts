@@ -148,9 +148,6 @@ export class GameService {
       });
       if (!gameUser) return { ok: false, error: 'cannot find user' };
 
-      if (gameUser.score <= 0)
-        return { ok: false, error: 'cannot upgrade score' };
-
       if (diffScore > 0) {
         gameUser.successUpgrade += 1;
       }
