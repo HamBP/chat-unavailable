@@ -52,7 +52,7 @@ export class GameService {
     }
   }
 
-  async gameUserByKakaoId(kakaoUserId: { kakaoUserId: string }) {
+  async gameUserByKakaoId(kakaoUserId:string) {
     try {
       const gameUser = await this.gameUserRepo.findOneOrFail({
         where: { kakaoUserId },
@@ -62,7 +62,7 @@ export class GameService {
         gameUser,
       };
     } catch (error) {
-      return { ok: false, error: 'cannot find user' };
+      return { ok: false, error: `cannot find user by ${kakaoUserId}` };
     }
   }
 
