@@ -31,6 +31,25 @@ router.get('/', async (req, res, next) => {
 	});
 });
 
+// 30일 16:00 일괄 요청
+router.post('/chatbot', async (req, res, next) => {
+	const users = await libKakaoWork.getUserList();
+	const conversations = await Promise.all(
+		users.map((user) => libKakaoWork.openConversations({ userId: user.id }))
+	);
+	const messages = await Promise.all([
+		conversations.map((conversation) =>
+			libKakaoWork.sendMessage({
+				conversationId: conversation.id,
+				text: '☆★우승시 기프티콘을 드립니다★☆',
+				blocks: block.main(5, 3),
+			})
+		),
+	]);
+	
+	res.json({result : true});
+})
+
 router.post('/request', async (req, res, next) => {
 	const { message, value } = req.body;
 
@@ -48,7 +67,7 @@ router.post('/request', async (req, res, next) => {
 
 // routes/index.js
 router.post('/callback', async (req, res, next) => {
-	const { message, actions, action_time, value } = req.body; // 설문조사 결과 확인 (2)
+	const { message, actions, action_time, value } = req.body;
 
 	switch (value) {
 		case 'main':

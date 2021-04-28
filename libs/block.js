@@ -150,7 +150,7 @@ exports.submit_quiz = (score, isSuccessful) => [
 	},
 	{
 		type: 'description',
-		term: '남은 문제',
+		term: '푼 문제',
 		content: {
 			type: 'text',
 			text: '${}',
@@ -162,6 +162,9 @@ exports.submit_quiz = (score, isSuccessful) => [
 		type: 'button',
 		text: '메뉴 보기',
 		style: 'default',
+		value: 'main',
+		action_type: 'submit_action',
+		action_name: 'submit',
 	},
 ];
 
@@ -227,10 +230,10 @@ exports.manual = () => [
 /* modals */
 /* 퀴즈 풀 때 모달 */
 exports.quiz_modal = {
-	title: 'modal title',
+	title: '지난 프로젝트 제목 맞히기!',
 	accept: '확인',
 	decline: '취소',
-	value: '{request_modal의 응답으로 전송한 value 값}',
+	value: 'submit_quiz',
 	blocks: [
 		{
 			type: 'select',
