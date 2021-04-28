@@ -15,8 +15,9 @@ router.get("/", async (req, res, next) => {
       const conversation = await libKakaoWork.openConversations({
         userId: user.id,
       });
-      const res = await gameDB.gameUserUpsert({ kakaoUserId: user.id });
-      const gameUser = res.gameUser;
+      const result = await gameDB.gameUserUpsert({ kakaoUserId: user.id });
+      console.log(result); 
+	  const gameUser = result.gameUser;
       const { score, successUpgrade } = gameUser;
 
       return libKakaoWork.sendMessage({
@@ -87,6 +88,7 @@ router.post("/chatbot", async (req, res, next) => {
 });
 
 router.post("/request", async (req, res, next) => {
+  console.log(req.body);
   const { message, value } = req.body;
 
   switch (value) {
@@ -103,8 +105,8 @@ router.post("/request", async (req, res, next) => {
 
 // routes/index.js
 router.post("/callback", async (req, res, next) => {
+  console.log(req.body);
   const { message, actions, action_time, value } = req.body;
-
   switch (value) {
     case "main":
       await libKakaoWork.sendMessage({
