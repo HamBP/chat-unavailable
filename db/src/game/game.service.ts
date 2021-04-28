@@ -74,7 +74,7 @@ export class GameService {
       let gameUser = await this.gameUserRepo.findOne({
         where: { kakaoUserId },
       });
-      if (gameUser) return { ok: false, error: 'already exits' };
+      if (gameUser) return { ok: true, gameUser };
 
       gameUser = await this.gameUserRepo.save(
         this.gameUserRepo.create({
@@ -82,6 +82,7 @@ export class GameService {
           solvedQuestions: { questions: [] },
         }),
       );
+
       return { ok: true, gameUser };
     } catch (error) {
       return {
