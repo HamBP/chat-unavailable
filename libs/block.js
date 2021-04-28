@@ -1,3 +1,49 @@
+/* template */
+const template = (score, count) => [
+	{
+		type: 'button',
+		text: '출석하기',
+		style: 'default',
+		value: 'attendance',
+		action_type: 'submit_action',
+		action_name: 'submit',
+	},
+	{
+		type: 'button',
+		text: '퀴즈 풀기',
+		style: 'default',
+		value: 'quiz',
+		action_type: 'submit_action',
+		action_name: 'submit',
+	},
+	{
+		type: 'button',
+		text: `강화하기 (${count})`,
+		style: 'danger',
+		value: 'upgrade',
+		action_type: 'submit_action',
+		action_name: 'submit',
+	},
+	{
+		type: 'button',
+		text: '사용 방법',
+		style: 'default',
+		value: 'manual',
+		action_type: 'submit_action',
+		action_name: 'submit',
+	},
+	{
+		type: 'description',
+		term: '점수',
+		content: {
+			type: 'text',
+			text: `${score}점`,
+			markdown: false,
+		},
+		accent: true,
+	},
+];
+
 /* messages */
 /* 홈 */
 exports.main = (score, count) => [
@@ -85,11 +131,12 @@ exports.quiz = () => [
 	},
 ];
 
-exports.submit_quiz = (score) => [
+/* 퀴즈 제출시 결과 */
+exports.submit_quiz = (score, isSuccessful) => [
 	{
 		type: 'header',
-		text: '정답입니다. or 틀렸습니다.',
-		style: 'blue' /*틀렸으면 red*/,
+		text: `${isSuccessful ? '정답입니다.' : '틀렸습니다.'}`,
+		style: `${isSuccessful ? 'blue' : 'red'}`,
 	},
 	{
 		type: 'description',
@@ -123,13 +170,13 @@ exports.upgrade = (score, count, isSuccessful) => [
     {
       "type": "header",
       "text": `강화 ${isSuccessful ? '성공' : '실패'}!`,
-      "style": `${isSuccessful ? 'blue' : 'red'}` /*실패시 red*/
+      "style": `${isSuccessful ? 'blue' : 'red'}`
     },
     ...template(score, count)
   ]
 
 /* 설명서 */
-exports.instruction = [
+exports.manual = () => [
 	{
 		type: 'header',
 		text: '이렇게 사용하세요',
@@ -150,7 +197,7 @@ exports.instruction = [
 		term: '문제',
 		content: {
 			type: 'text',
-			text: '1점과 강화 횟수 1회를 드립니다. <br>원하는 문제만 선택하여 풀 수 있습니다.',
+			text: '1점과 강화 횟수 1회를 드립니다. 원하는 문제만 선택하여 풀 수 있습니다.',
 			markdown: true,
 		},
 		accent: true,
@@ -241,41 +288,3 @@ exports.quiz_modal = {
 		},
 	],
 };
-
-const template = (score, count) => [
-	{
-		type: 'button',
-		text: '출석하기',
-		style: 'default',
-		value: 'attendance',
-	},
-	{
-		type: 'button',
-		text: '퀴즈 풀기',
-		style: 'default',
-		value: 'quiz',
-	},
-	{
-		type: 'button',
-		text: `강화하기 (${count})`,
-		style: 'danger',
-		value: 'upgrade',
-	},
-	{
-		type: 'button',
-		text: '사용 방법',
-		style: 'default',
-		value: 'manual'
-	},
-	{
-		type: 'description',
-		term: '점수',
-		content: {
-			type: 'text',
-			text: `${score}점`,
-			markdown: false,
-		},
-		accent: true,
-	},
-];
-

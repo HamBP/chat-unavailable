@@ -40,13 +40,6 @@ router.post('/request', async (req, res, next) => {
 				view: block.quiz_modal,
 			});
 			break;
-		case 'instruction':
-			await libKakaoWork.sendMessage({
-				conversationId: message.conversationId,
-				text: '☆★우승시 기프티콘을 드립니다★☆',
-				blocks: block.instruction(),
-			})
-			break;
 		default:
 	}
 
@@ -58,54 +51,47 @@ router.post('/callback', async (req, res, next) => {
 	const { message, actions, action_time, value } = req.body; // 설문조사 결과 확인 (2)
 
 	switch (value) {
-		case 'cafe_survey_results':
-			// 설문조사 응답 결과 메세지 전송 (3)
+		case 'main':
 			await libKakaoWork.sendMessage({
 				conversationId: message.conversation_id,
-				text: '설문조사에 응해주셔서 감사합니다!',
-				blocks: [
-					{
-						type: 'text',
-						text: '설문조사에 응해주셔서 감사합니다! 🎁',
-						markdown: true,
-					},
-					{
-						type: 'text',
-						text: '*답변 내용*',
-						markdown: true,
-					},
-					{
-						type: 'description',
-						term: '평점',
-						content: {
-							type: 'text',
-							text: actions.rating,
-							markdown: false,
-						},
-						accent: true,
-					},
-					{
-						type: 'description',
-						term: '바라는 점',
-						content: {
-							type: 'text',
-							text: actions.wanted,
-							markdown: false,
-						},
-						accent: true,
-					},
-					{
-						type: 'description',
-						term: '시간',
-						content: {
-							type: 'text',
-							text: action_time,
-							markdown: false,
-						},
-						accent: true,
-					},
-				],
+				text: '☆★우승시 기프티콘을 드립니다★☆',
+				blocks: block.main(5, 3),
 			});
+			break;
+		case 'attendance':
+			await libKakaoWork.sendMessage({
+				conversationId: message.conversation_id,
+				text: '☆★우승시 기프티콘을 드립니다★☆',
+				blocks: block.attendance(5, 3),
+			});
+			break;
+		case 'quiz':
+			await libKakaoWork.sendMessage({
+				conversationId: message.conversation_id,
+				text: '☆★우승시 기프티콘을 드립니다★☆',
+				blocks: block.quiz(),
+			});
+			break;
+		case 'upgrade':
+			await libKakaoWork.sendMessage({
+				conversationId: message.conversation_id,
+				text: '☆★우승시 기프티콘을 드립니다★☆',
+				blocks: block.upgrade(6, 2, true),
+			});
+			break;
+		case 'manual':
+			await libKakaoWork.sendMessage({
+				conversationId: message.conversation_id,
+				text: '☆★우승시 기프티콘을 드립니다★☆',
+				blocks: block.manual(),
+			});
+			break;
+		case 'submit_quiz':
+			await libKakaoWork.sendMessage({
+				conversationId: message.conversation_id,
+				text: '☆★우승시 기프티콘을 드립니다★☆',
+				blocks: block.submit_quiz(6, true)
+			})
 			break;
 		default:
 	}
