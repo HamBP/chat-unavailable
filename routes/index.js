@@ -1,31 +1,116 @@
-const controller = require('../libs/schedules/ScheduleController');
 const express = require('express');
 const router = express.Router();
+const libKakaoWork = require('../libs/kakaoWork');
+const block = require('../libs/block');
 
-
-// 메시지 보내는 트리거
 router.get('/', async (req, res, next) => {
-    await controller.sendInitialMessage();
+	// 유저 목록 검색 (1)
+	const users = await libKakaoWork.getUserList();
 
-    return res.send('응 잘 처리함 ㅎㅎ');
+	// 검색된 모든 유저에게 각각 채팅방 생성 (2)
+	const conversations = await Promise.all(
+		users.map((user) => libKakaoWork.openConversations({ userId: user.id }))
+	);
+
+	// 생성된 채팅방에 메세지 전송 (3)
+	const messages = await Promise.all([
+		conversations.map((conversation) =>
+			libKakaoWork.sendMessage({
+				conversationId: conversation.id,
+				text: '☆★우승시 기프티콘을 드립니다★☆',
+				blocks: block.main(5, 3),
+			})
+		),
+	]);
+
+	// 응답값은 자유롭게 작성하셔도 됩니다.
+	res.json({
+		users,
+		conversations,
+		messages,
+	});
 });
 
-
-// 모달 폼의 내용을 구성하기 위해 클라이언트가 보내는 요청을 받는 라우터.
-// JSON 타입의 폼 내용을 응답에 돌려주어야 함.
 router.post('/request', async (req, res, next) => {
-	const formContent = controller.createModalFormContent(req.body);
-	
-    return res.json(formContent);
+	const { message, value } = req.body;
+
+	switch (value) {
+		case 'quiz_modal':
+			return res.json({
+				view: block.quiz_modal,
+			});
+			break;
+		case 'instruction':
+			await libKakaoWork.sendMessage({
+				conversationId: message.conversationId,
+				text: '☆★우승시 기프티콘을 드립니다★☆',
+				blocks: block.instruction(),
+			})
+			break;
+		default:
+	}
+
+	res.json({});
 });
 
-
-// 위에서 전달한 모달 폼의 submit 요청을 받는 라우터.
-// JSON 타입으로 { result: true }를 응답에 돌려주면 됨(?).
+// routes/index.js
 router.post('/callback', async (req, res, next) => {
-    const result = await controller.processModalFormSubmit(req.body);
+	const { message, actions, action_time, value } = req.body; // 설문조사 결과 확인 (2)
 
-    return res.json({ result });
+	switch (value) {
+		case 'cafe_survey_results':
+			// 설문조사 응답 결과 메세지 전송 (3)
+			await libKakaoWork.sendMessage({
+				conversationId: message.conversation_id,
+				text: '설문조사에 응해주셔서 감사합니다!',
+				blocks: [
+					{
+						type: 'text',
+						text: '설문조사에 응해주셔서 감사합니다! 🎁',
+						markdown: true,
+					},
+					{
+						type: 'text',
+						text: '*답변 내용*',
+						markdown: true,
+					},
+					{
+						type: 'description',
+						term: '평점',
+						content: {
+							type: 'text',
+							text: actions.rating,
+							markdown: false,
+						},
+						accent: true,
+					},
+					{
+						type: 'description',
+						term: '바라는 점',
+						content: {
+							type: 'text',
+							text: actions.wanted,
+							markdown: false,
+						},
+						accent: true,
+					},
+					{
+						type: 'description',
+						term: '시간',
+						content: {
+							type: 'text',
+							text: action_time,
+							markdown: false,
+						},
+						accent: true,
+					},
+				],
+			});
+			break;
+		default:
+	}
+
+	res.json({ result: true });
 });
 
 module.exports = router;

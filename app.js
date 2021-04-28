@@ -1,13 +1,11 @@
 const express = require('express');
 const path = require('path');
+
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const index = require('./routes/index');
 
-// 중요!!!!!!!!!!!
-const moment = require("moment-timezone");
-moment.tz.setDefault("Asia/Seoul");
+const index = require('./routes/index');
 
 const app = express();
 
@@ -36,17 +34,7 @@ app.use(function(err, req, res, next) {
   res.json({ err });
 });
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-
-
-// 쨘 /////////////////////////////////////////////////////////////////////////////////
-const scheduleService = require('./libs/schedules/ScheduleService');
-
-setInterval(async () => {
-	await scheduleService.sendScheduleNotifications();
-}, 5000);
-//////////////////////////////////////////////////////////////////////////////////////
-
 
 module.exports = app;
