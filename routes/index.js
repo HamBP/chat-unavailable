@@ -1,26 +1,29 @@
 const express = require('express');
 const router = express.Router();
 const libKakaoWork = require('../libs/kakaoWork');
+const gameDB = require("../libs/gamedb")
 const block = require('../libs/block');
 
 router.get('/', async (req, res, next) => {
 	// 유저 목록 검색 (1)
 	const users = await libKakaoWork.getUserList();
-	console.log(users)
+
+	console.log("생성되는 유저 수 : ",users.length);
 	// 검색된 모든 유저에게 각각 채팅방 생성 (2)
 	const conversations = await Promise.all(
 		users.map((user) => libKakaoWork.openConversations({ userId: user.id }))
 	);
+	await Promise.all(users.map((user) =>  gameDB.gameUserUpsert({kakaoUserId:user.id}));
 
 	// 생성된 채팅방에 메세지 전송 (3)
 	const messages = await Promise.all([
-		conversations.map((conversation) =>
-			libKakaoWork.sendMessage({
-				conversationId: conversation.id,
-				text: '☆★우승시 기프티콘을 드립니다★☆',
-				blocks: block.main(5, 3),
-			})
-		),
+		conversations.map((conversation) =>{
+			return libKakaoWork.sendMessage({
+					conversationId: conversation.id,
+					text: '☆★우승시 기프티콘을 드립니다★☆',
+					blocks: block.main(5, 3),
+				})
+			}),
 	]);
 
 	// 응답값은 자유롭게 작성하셔도 됩니다.
