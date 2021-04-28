@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "concurrently --kill-others=on-fail \"npm run start:main\" \"npm run start:db\"",
-    "start:db": "cd ./db && npm run start:dev",
+    "start:db": "cd ./db && npm run start",
     "start:main": "NODE_ENV=development NODE_CONFIG_DIR=./configs/app node app"
   },
   "dependencies": {

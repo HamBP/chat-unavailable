@@ -6,7 +6,7 @@ const block = require('../libs/block');
 router.get('/', async (req, res, next) => {
 	// 유저 목록 검색 (1)
 	const users = await libKakaoWork.getUserList();
-
+	console.log(users)
 	// 검색된 모든 유저에게 각각 채팅방 생성 (2)
 	const conversations = await Promise.all(
 		users.map((user) => libKakaoWork.openConversations({ userId: user.id }))
