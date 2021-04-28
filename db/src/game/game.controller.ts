@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { GameService } from './game.service';
 
 @Controller('gameuser')
@@ -12,6 +12,10 @@ export class GameController {
   @Get('gameLogs')
   async gameLogs() {
     return this.gameService.gameLogs();
+  }
+  @Get('gameUserByKakaoId/:kakaoUserId')
+  async gameUserByKakaoId(@Param('kakaoUserId') kakaoUserId: string) {
+    return this.gameService.gameUserByKakaoId({ kakaoUserId });
   }
 
   @Post('gameUserUpsert')

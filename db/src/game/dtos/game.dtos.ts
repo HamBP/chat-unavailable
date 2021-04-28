@@ -1,9 +1,12 @@
+import { GameUser } from '../entities/game.entity';
+
 export class GamerUserUpsertInput {
   kakaoUserId: string;
 }
 export class GamerUserUpsertOutput {
   ok: boolean;
   error?: string;
+  gameUser?: GameUser;
 }
 
 export class GameUserAttendanceChecInput {
@@ -13,6 +16,7 @@ export class GameUserAttendanceChecInput {
 export class GameUserAttendanceCheckOutput {
   ok: boolean;
   error?: string;
+  gameUser?: GameUser;
 }
 
 export class GameUserReinforcementInput {
@@ -22,6 +26,7 @@ export class GameUserReinforcementInput {
 export class GameUserReinforcementOutput {
   ok: boolean;
   error?: string;
+  gameUser?: GameUser;
 }
 
 export class GameUserPSSuccesInput {
@@ -31,4 +36,5 @@ export class GameUserPSSuccesInput {
 export class GameUserPSSuccessOutput {
   ok: boolean;
   error?: string;
+  gameUser?: GameUser;
 }

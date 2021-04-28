@@ -52,6 +52,20 @@ export class GameService {
     }
   }
 
+  async gameUserByKakaoId(kakaoUserId: { kakaoUserId: string }) {
+    try {
+      const gameUser = await this.gameUserRepo.findOneOrFail({
+        where: { kakaoUserId },
+      });
+      return {
+        ok: true,
+        gameUser,
+      };
+    } catch (error) {
+      return { ok: false, error: 'cannot find user' };
+    }
+  }
+
   // 사용자 생성
   async gameUserUpsert({
     kakaoUserId,
@@ -68,7 +82,7 @@ export class GameService {
           solvedQuestions: { questions: [] },
         }),
       );
-      return { ok: true };
+      return { ok: true, gameUser };
     } catch (error) {
       return {
         ok: false,
@@ -112,7 +126,7 @@ export class GameService {
           score: 1,
         }),
       );
-      return { ok: true };
+      return { ok: true, gameUser };
     } catch (error) {
       console.log(error);
       return {
@@ -151,7 +165,7 @@ export class GameService {
           score: diffScore,
         }),
       );
-      return { ok: true };
+      return { ok: true, gameUser };
     } catch (error) {
       console.log(error);
       return { ok: false, error: 'cannot upgrade gameUser' };
@@ -201,6 +215,7 @@ export class GameService {
       );
       return {
         ok: true,
+        gameUser,
       };
     } catch (error) {
       console.log(error);
