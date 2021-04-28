@@ -109,7 +109,7 @@ router.post("/callback", async (req, res, next) => {
   const { message, actions, action_time, value,react_user_id } = req.body;
 
   const result = await gameDB.gameUserByKakaoId(react_user_id)
-  const { score, successUpgrade } = result?.gameUser
+  const { score, successUpgrade } = result.gameUser
 
   switch (value) {
     case "main":
@@ -122,7 +122,7 @@ router.post("/callback", async (req, res, next) => {
     case "attendance":
       
       const result = await gameDB.gameUserAttendanceCheck({kakaoUserId:react_user_id})
-      if(result?.ok){
+      if(result.ok){
         await libKakaoWork.sendMessage({
           conversationId: message.conversation_id,
           text: "☆★우승시 기프티콘을 드립니다★☆",
@@ -150,14 +150,14 @@ router.post("/callback", async (req, res, next) => {
       await libKakaoWork.sendMessage({
         conversationId: message.conversation_id,
         text: "☆★우승시 기프티콘을 드립니다★☆",
-        blocks: block.upgrade(score, successUpgrade, true),
+        blocks: block.upgrade(score+1, successUpgrade+1, true),
       });
      }else{
       await gameDB.gameUserReinforcement({kakaoUserId:react_user_id,diffScore:-1});
       await libKakaoWork.sendMessage({
         conversationId: message.conversation_id,
         text: "☆★우승시 기프티콘을 드립니다★☆",
-        blocks: block.upgrade(score, successUpgrade, false),
+        blocks: block.upgrade(score-1, successUpgrade, false),
       });
      }
       break;
