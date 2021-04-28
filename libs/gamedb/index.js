@@ -1,6 +1,8 @@
+const Config = require("config");
 const axios = require("axios");
 const gameDB = axios.create({
-  baseURL: "https://127.0.0.1:3001",
+  // baseURL: "https://127.0.0.1:3001",
+  baseURL: Config.keys.DB_SERVER.baseURL,
 });
 
 // 200 check
@@ -17,7 +19,7 @@ exports.getRank = async () => {
 
 // 로그 확인
 exports.gameLogs = async () => {
-  const res = await kakaoInstance.get("/gameuser/gameLogs");
+  const res = await gameDB.get("/gameuser/gameLogs");
   return res;
 };
 
@@ -26,7 +28,7 @@ exports.gameUserUpsert = async ({ kakaoUserId }) => {
   const data = {
     kakaoUserId,
   };
-  const res = await kakaoInstance.post("/gameuser/gameUserUpsert", data);
+  const res = await gameDB.post("/gameuser/gameUserUpsert", data);
   return res;
 };
 
@@ -35,10 +37,7 @@ exports.gameUserAttendanceCheck = async ({ kakaoUserId }) => {
   const data = {
     kakaoUserId,
   };
-  const res = await kakaoInstance.post(
-    "/gameuser/gameUserAttendanceCheck",
-    data
-  );
+  const res = await gameDB.post("/gameuser/gameUserAttendanceCheck", data);
   return res;
 };
 
@@ -48,7 +47,7 @@ exports.gameUserReinforcement = async ({ kakaoUserId, diffScore }) => {
     kakaoUserId,
     diffScore,
   };
-  const res = await kakaoInstance.post("/gameuser/gameUserReinforcement", data);
+  const res = await gameDB.post("/gameuser/gameUserReinforcement", data);
   return res;
 };
 
@@ -58,6 +57,6 @@ exports.gameUserPSSuccess = async ({ kakaoUserId }) => {
     kakaoUserId,
     submitQuizNumber,
   };
-  const res = await kakaoInstance.post("/gameuser/gameUserPSSuccess", data);
+  const res = await gameDB.post("/gameuser/gameUserPSSuccess", data);
   return res;
 };
