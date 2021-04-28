@@ -65,6 +65,15 @@ exports.attendance = (score, count) => [
 	...template(score, count)
 ];
 
+exports.attendance_fail = (score, count) => [
+	{
+		type: 'header',
+		text: '출석 실패 ㅜㅜ.',
+		style: 'blue',
+	},
+	...template(score, count)
+];
+
 /* 퀴즈 */
 exports.quiz = () => [
 	{

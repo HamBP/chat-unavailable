@@ -106,21 +106,35 @@ router.post("/request", async (req, res, next) => {
 // routes/index.js
 router.post("/callback", async (req, res, next) => {
   console.log(req.body);
-  const { message, actions, action_time, value } = req.body;
+  const { message, actions, action_time, value,react_user_id } = req.body;
+
+  const result = await gameDB.gameUserByKakaoId(react_user_id)
+  const { score, successUpgrade } = result?.gameUser
+
   switch (value) {
     case "main":
       await libKakaoWork.sendMessage({
         conversationId: message.conversation_id,
         text: "☆★우승시 기프티콘을 드립니다★☆",
-        blocks: block.main(5, 3),
+        blocks: block.main(score, successUpgrade),
       });
       break;
     case "attendance":
-      await libKakaoWork.sendMessage({
-        conversationId: message.conversation_id,
-        text: "☆★우승시 기프티콘을 드립니다★☆",
-        blocks: block.attendance(5, 3),
-      });
+      
+      const result = await gameDB.gameUserAttendanceCheck({kakaoUserId:react_user_id})
+      if(result?.ok){
+        await libKakaoWork.sendMessage({
+          conversationId: message.conversation_id,
+          text: "☆★우승시 기프티콘을 드립니다★☆",
+          blocks: block.attendance(score+1, successUpgrade),
+        });
+      }else{
+        await libKakaoWork.sendMessage({
+          conversationId: message.conversation_id,
+          text: "☆★우승시 기프티콘을 드립니다★☆",
+          blocks: block.attendance_fail(score, successUpgrade),
+        });
+      }
       break;
     case "quiz":
       await libKakaoWork.sendMessage({
@@ -130,11 +144,22 @@ router.post("/callback", async (req, res, next) => {
       });
       break;
     case "upgrade":
+     const upgradeResult = Math.random() > 0.5
+     if(upgradeResult){
+      await gameDB.gameUserReinforcement({kakaoUserId:react_user_id,diffScore:1});
       await libKakaoWork.sendMessage({
         conversationId: message.conversation_id,
         text: "☆★우승시 기프티콘을 드립니다★☆",
-        blocks: block.upgrade(6, 2, true),
+        blocks: block.upgrade(score, successUpgrade, true),
       });
+     }else{
+      await gameDB.gameUserReinforcement({kakaoUserId:react_user_id,diffScore:-1});
+      await libKakaoWork.sendMessage({
+        conversationId: message.conversation_id,
+        text: "☆★우승시 기프티콘을 드립니다★☆",
+        blocks: block.upgrade(score, successUpgrade, false),
+      });
+     }
       break;
     case "manual":
       await libKakaoWork.sendMessage({
@@ -147,7 +172,7 @@ router.post("/callback", async (req, res, next) => {
       await libKakaoWork.sendMessage({
         conversationId: message.conversation_id,
         text: "☆★우승시 기프티콘을 드립니다★☆",
-        blocks: block.submit_quiz(6, true),
+        blocks: block.submit_quiz(score, successUpgrade),
       });
       break;
     default:

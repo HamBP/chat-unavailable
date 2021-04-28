@@ -23,6 +23,12 @@ exports.gameLogs = async () => {
   return res.data;
 };
 
+// 유저 확인
+exports.gameUserByKakaoId = async (kakaoUserId) => {
+  const res = await gameDB.get(`/gameuser/gameUserByKakaoId/${kakaoUserId}`);
+  return res.data;
+};
+
 // 유저 만들기
 exports.gameUserUpsert = async ({ kakaoUserId }) => {
   const data = {

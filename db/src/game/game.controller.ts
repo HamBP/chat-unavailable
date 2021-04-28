@@ -15,7 +15,6 @@ export class GameController {
   }
   @Get('gameUserByKakaoId/:kakaoUserId')
   async gameUserByKakaoId(@Param('kakaoUserId') kakaoUserId: string) {
-    console.log(kakaoUserId);
     return this.gameService.gameUserByKakaoId(String(kakaoUserId));
   }
 
