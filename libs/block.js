@@ -78,65 +78,86 @@ exports.attendance_fail = (score, count) => [
 exports.quiz = () => [
 	{
 		type: 'header',
-		text: '지난 기수 프로젝트 이름은?',
+		text: '지난 기수 프로젝트의 이름은?',
 		style: 'blue',
 	},
+    {
+        type: "text",
+        text: "📌아래 10문제 중 *문제 풀기* 버튼을 클릭하셔서, 원하시는 문제를 골라 푸시면 됩니다.",
+        markdow: true
+    },
+    {
+        type: "text",
+        text: "단, 맞추신 문제는 중복으로 푸실 수 없습니다!",
+        markdown: true
+    },
+    {
+        type: "divider"
+    },
 	{
 		type: 'text',
-		text: '1. 독거노인을 위한 ○○ ○○',
+		text: 'Q1. 학교 선생님과 함께하는 *OOO* 학습 생태계 프로젝트',
 		markdown: true,
 	},
 	{
 		type: 'text',
-		text: '2. ...',
+		text: 'Q2. 위치기반 정보를 활용한 *OO* 정리 애플리케이션',
 		markdown: true,
 	},
 	{
 		type: 'text',
-		text: '3. ...',
+		text: 'Q3. 다같이 온라인으로 끝까지 *OO*하는 확실한 방법!',
 		markdown: true,
 	},
 	{
 		type: 'text',
-		text: '4. ...',
+		text: 'Q4. OO의 모든 것',
 		markdown: true,
 	},
 	{
 		type: 'text',
-		text: '5. ...',
+		text: 'Q5. 위험 상황 방지를 위한 *OO* 모니터링 서비스',
 		markdown: true,
 	},
 	{
 		type: 'text',
-		text: '6. ...',
+		text: 'Q6. 몰입형 가상 *OO* 체험 솔루션',
 		markdown: true,
 	},
 	{
 		type: 'text',
-		text: '7. ...',
+		text: 'Q7. 모두를 위한 인공지능 *OO* 선생님',
 		markdown: true,
 	},
 	{
 		type: 'text',
-		text: '8. ...',
+		text: 'Q8. *OO* 컨텐츠를 활용한 소셜 네트워크 서비스',
 		markdown: true,
 	},
 	{
 		type: 'text',
-		text: '9. ...',
+		text: 'Q9. 개인 성향을 반영한 *OO* 추천 플랫폼',
 		markdown: true,
 	},
 	{
 		type: 'text',
-		text: '10. ...',
+		text: 'Q10. 나만의 프로 *OO* 코치',
 		markdown: true,
 	},
 	{
 		type: 'button',
 		text: '문제 풀기',
-		style: 'default',
+		style: 'primary',
 		action_type: 'call_modal',
 		value: 'quiz_modal'
+	},
+    {
+		type: 'button',
+		text: '뒤로 가기',
+		style: 'default',
+		action_type: 'submit_action',
+        action_name: "submit",
+		value: 'main'
 	},
 ];
 
@@ -144,7 +165,7 @@ exports.quiz = () => [
 exports.submit_quiz = (score, isSuccessful) => [
 	{
 		type: 'header',
-		text: `${isSuccessful ? '정답입니다.' : '틀렸습니다.'}`,
+		text: `${isSuccessful ? '정답입니다! 🎉' : '틀렸습니다ㅠㅠ 💦'}`,
 		style: `${isSuccessful ? 'blue' : 'red'}`,
 	},
 	{
@@ -159,7 +180,7 @@ exports.submit_quiz = (score, isSuccessful) => [
 	},
 	{
 		type: 'description',
-		term: '푼 문제',
+		term: '푼 문제 👍',
 		content: {
 			type: 'text',
 			text: '${}',
@@ -169,7 +190,7 @@ exports.submit_quiz = (score, isSuccessful) => [
 	},
 	{
 		type: 'button',
-		text: '메뉴 보기',
+		text: '메뉴로 돌아가기',
 		style: 'default',
 		value: 'main',
 		action_type: 'submit_action',
@@ -276,43 +297,43 @@ exports.quiz_modal = {
 			name: 'select_problem',
 			options: [
 				{
-					text: '문제 1',
+					text: 'Q1. 학교 선생님과 함께하는 OOO 학습 생태계 프로젝트',
 					value: '1',
 				},
 				{
-					text: '문제 2',
+					text: 'Q2. 위치기반 정보를 활용한 OO정리 애플리케이션',
 					value: '2',
 				},
 				{
-					text: '문제 3',
+					text: 'Q3. 다같이 온라인으로 끝까지 OO하는 확실한 방법!',
 					value: '3',
 				},
 				{
-					text: '문제 4',
+					text: 'Q4. OO의 모든 것',
 					value: '4',
 				},
 				{
-					text: '문제 5',
+					text: 'Q5. 위험 상황 방지를 위한 OO 모니터링 서비스',
 					value: '5',
 				},
 				{
-					text: '문제 6',
+					text: 'Q6. 몰입형 가상 OO 체험 솔루션',
 					value: '6',
 				},
 				{
-					text: '문제 7',
+					text: 'Q7. 모두를 위한 인공지능 OO 선생님',
 					value: '7',
 				},
 				{
-					text: '문제 8',
+					text: 'Q8. OO 컨텐츠를 활용한 소셜 네트워크 서비스',
 					value: '8',
 				},
 				{
-					text: '문제 9',
+					text: 'Q9. 개인 성향을 반영한 OO 추천 플랫폼',
 					value: '9',
 				},
 				{
-					text: '문제 10',
+					text: 'Q10. 나만의 프로 OO 코치',
 					value: '10',
 				},
 			],
