@@ -2,7 +2,7 @@
 const template = (score, count) => [
 	{
 		type: 'button',
-		text: '출석하기',
+		text: '🖐출석 하기🖐',
 		style: 'default',
 		value: 'attendance',
 		action_type: 'submit_action',
@@ -10,7 +10,7 @@ const template = (score, count) => [
 	},
 	{
 		type: 'button',
-		text: '퀴즈 풀기',
+		text: '💡퀴즈 풀기💡',
 		style: 'default',
 		value: 'quiz',
 		action_type: 'submit_action',
@@ -18,7 +18,7 @@ const template = (score, count) => [
 	},
 	{
 		type: 'button',
-		text: `강화하기 (${count})`,
+		text: `💥강화 하기 (${count})💥`,
 		style: 'danger',
 		value: 'upgrade',
 		action_type: 'submit_action',
@@ -26,7 +26,7 @@ const template = (score, count) => [
 	},
 	{
 		type: 'button',
-		text: '사용 방법',
+		text: '❗❗❗ 사용 방법 ❗❗❗',
 		style: 'default',
 		value: 'manual',
 		action_type: 'submit_action',
@@ -34,11 +34,11 @@ const template = (score, count) => [
 	},
 	{
 		type: 'description',
-		term: '점수',
+		term: '🎡 점수',
 		content: {
 			type: 'text',
-			text: `${score}점`,
-			markdown: false,
+			text: `*${score}*점`,
+			markdown: true,
 		},
 		accent: true,
 	},
@@ -50,7 +50,7 @@ exports.main = (score, count) => [
 	{
 		type: 'header',
 		text: '채팅이 불가능한 채널입니다.',
-		style: 'blue',
+		style: 'yellow',
 	},
 	...template(score, count)
 ];
@@ -59,7 +59,7 @@ exports.main = (score, count) => [
 exports.attendance = (score, count) => [
 	{
 		type: 'header',
-		text: '출석이 완료되었습니다.',
+		text: '출석이 완료되었습니다 🙂',
 		style: 'blue',
 	},
 	...template(score, count)
@@ -68,8 +68,8 @@ exports.attendance = (score, count) => [
 exports.attendance_fail = (score, count) => [
 	{
 		type: 'header',
-		text: '출석 실패 ㅜㅜ.',
-		style: 'blue',
+		text: '출석 실패ㅠㅠ 😥(1일 1회만)',
+		style: 'red',
 	},
 	...template(score, count)
 ];
@@ -181,7 +181,7 @@ exports.submit_quiz = (score, isSuccessful) => [
 exports.upgrade = (score, count, isSuccessful) => [
     {
       "type": "header",
-      "text": `강화 ${isSuccessful ? '성공' : '실패'}!`,
+      "text": `강화 ${isSuccessful ? '성공 +1 😎' : '실패 -1 💥💥💥'}!`,
       "style": `${isSuccessful ? 'blue' : 'red'}`
     },
     ...template(score, count)
@@ -191,49 +191,76 @@ exports.upgrade = (score, count, isSuccessful) => [
 exports.manual = () => [
 	{
 		type: 'header',
-		text: '이렇게 사용하세요',
+		text: '📌 이렇게 사용하세요 !',
 		style: 'blue',
 	},
+    {
+      type: "text",
+      text: "저희가 준비한 다양한 미니🎲게임을 즐기시면서 최대한 많은 *포인트*✨를 모아보세요! 상위 *N분*에 *상품🎁*을 드립니다!!",
+      markdown: true
+    },
+    {
+      type: "text",
+      text: "(저희 주머니를 빌렸습니다ㅠ)",
+      markdown: true
+    },
 	{
 		type: 'description',
-		term: '출석',
+		term: '✅출석',
 		content: {
 			type: 'text',
-			text: '1점과 강화 횟수 1회를 드립니다.',
-			markdown: false,
-		},
-		accent: true,
-	},
-	{
-		type: 'description',
-		term: '문제',
-		content: {
-			type: 'text',
-			text: '1점과 강화 횟수 1회를 드립니다. 원하는 문제만 선택하여 풀 수 있습니다.',
+			text: '*포인트 1점*과 *강화 횟수 1개*를 드립니다!',
 			markdown: true,
 		},
 		accent: true,
 	},
 	{
 		type: 'description',
-		term: '강화',
+		term: '✅문제',
 		content: {
 			type: 'text',
-			text: '강화 성공시 1점, 실패시 -1점을 드립니다. 확률은 50% 입니다.',
-			markdown: false,
+			text: '*포인트 1점*과 *강화 횟수 1개*를 드립니다!',
+			markdown: true,
 		},
 		accent: true,
 	},
 	{
 		type: 'description',
-		term: '상품',
+		term: '✅강화',
 		content: {
 			type: 'text',
-			text: '네??',
-			markdown: false,
+			text: '강화 횟수 당 성공 시 *+1점*, 실패 시 *-1점*이 됩니다. (확률은 *50%* !)',
+			markdown: true,
 		},
 		accent: true,
 	},
+	{
+		type: 'description',
+		term: '✅상품',
+		content: {
+			type: 'text',
+			text: 'maybe... 기프티콘s (아래 스벅에서 쓸 것도 있데요..!)',
+			markdown: true,
+		},
+		accent: true,
+	},
+    {
+      type: "text",
+      text: "보다 자세한 사항은 👇*아래 링크*👇를 참고해 주세요!!",
+      markdown: true
+    },
+    {
+      type: "context",
+      content: {
+        type: "text",
+        text: "[chat-unavailable README.md](https://github.com/HamBP/chat-unavailable)",
+        markdown: true
+      },
+      image: {
+        type: "image_link",
+        url: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+      }
+    }
 ];
 
 /* modals */
