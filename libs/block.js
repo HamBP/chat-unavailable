@@ -84,15 +84,15 @@ exports.quiz = () => [
     {
         type: "text",
         text: "📌아래 10문제 중 *문제 풀기* 버튼을 클릭하셔서, 원하시는 문제를 골라 푸시면 됩니다.",
-        markdow: true
+        markdown: true,
     },
     {
         type: "text",
         text: "단, 맞추신 문제는 중복으로 푸실 수 없습니다!",
-        markdown: true
+        markdown: true,
     },
     {
-        type: "divider"
+        type: "divider",
     },
 	{
 		type: 'text',
@@ -149,7 +149,7 @@ exports.quiz = () => [
 		text: '문제 풀기',
 		style: 'primary',
 		action_type: 'call_modal',
-		value: 'quiz_modal'
+		value: 'quiz_modal',
 	},
     {
 		type: 'button',
@@ -157,7 +157,7 @@ exports.quiz = () => [
 		style: 'default',
 		action_type: 'submit_action',
         action_name: "submit",
-		value: 'main'
+		value: 'main',
 	},
 ];
 
@@ -165,7 +165,7 @@ exports.quiz = () => [
 exports.submit_quiz = (score, isSuccessful) => [
 	{
 		type: 'header',
-		text: `${isSuccessful ? '정답입니다! 🎉' : '틀렸습니다ㅠㅠ 💦'}`,
+		text: `${isSuccessful ? '정답입니다.' : '틀렸습니다.'}`,
 		style: `${isSuccessful ? 'blue' : 'red'}`,
 	},
 	{
@@ -180,7 +180,7 @@ exports.submit_quiz = (score, isSuccessful) => [
 	},
 	{
 		type: 'description',
-		term: '푼 문제 👍',
+		term: '푼 문제',
 		content: {
 			type: 'text',
 			text: '${}',
@@ -190,7 +190,7 @@ exports.submit_quiz = (score, isSuccessful) => [
 	},
 	{
 		type: 'button',
-		text: '메뉴로 돌아가기',
+		text: '메뉴 보기',
 		style: 'default',
 		value: 'main',
 		action_type: 'submit_action',
@@ -218,12 +218,12 @@ exports.manual = () => [
     {
       type: "text",
       text: "저희가 준비한 다양한 미니🎲게임을 즐기시면서 최대한 많은 *포인트*✨를 모아보세요! 상위 *N분*에 *상품🎁*을 드립니다!!",
-      markdown: true
+      markdown: true,
     },
     {
       type: "text",
       text: "(저희 주머니를 빌렸습니다ㅠ)",
-      markdown: true
+      markdown: true,
     },
 	{
 		type: 'description',
@@ -266,22 +266,33 @@ exports.manual = () => [
 		accent: true,
 	},
     {
+      type: "divider",
+    },
+    {
       type: "text",
       text: "보다 자세한 사항은 👇*아래 링크*👇를 참고해 주세요!!",
-      markdown: true
+      markdown: true,
     },
     {
       type: "context",
       content: {
         type: "text",
         text: "[chat-unavailable README.md](https://github.com/HamBP/chat-unavailable)",
-        markdown: true
+        markdown: true,
       },
       image: {
         type: "image_link",
-        url: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+        url: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
       }
-    }
+    },
+    {
+		type: 'button',
+		text: '넵! 확인했습니다!',
+		style: 'primary',
+		action_type: 'submit_action',
+        action_name: "submit",
+		value: 'main',
+	},
 ];
 
 /* modals */
