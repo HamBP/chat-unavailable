@@ -41,6 +41,7 @@ export class GameService {
       };
     }
   }
+  // 모든 로그 출력
   async gameLogs() {
     try {
       const gameLogs = await this.gameLogRepo.find({});
@@ -52,7 +53,8 @@ export class GameService {
     }
   }
 
-  async gameUserByKakaoId(kakaoUserId:string) {
+  // 카카오 아이디로 사람 찾기
+  async gameUserByKakaoId(kakaoUserId: string) {
     try {
       const gameUser = await this.gameUserRepo.findOneOrFail({
         where: { kakaoUserId },
@@ -94,6 +96,7 @@ export class GameService {
 
   // 사용자 출석 체크 -
   // 아이디존재,출석 중복,24시간 체크, 출석로그
+  // - 강화횟수 증가
   async gameUserAttendanceCheck({
     kakaoUserId,
   }: GameUserAttendanceChecInput): Promise<GameUserAttendanceCheckOutput> {
@@ -106,18 +109,15 @@ export class GameService {
       if (!gameUser) return { ok: false, error: 'cannot find user' };
       // 출석 중복 체크
       if (gameUser.lastAttendance) {
-        const dayDiff =
-          (nowDate.getTime() - gameUser.lastAttendance.getTime()) /
-          (1000 * 60 * 60);
-        // console.log('day diff', dayDiff);
-
-        if (dayDiff < 24) {
+        const dayDiff = nowDate.getDate() - gameUser.lastAttendance.getDate();
+        if (dayDiff <= 0) {
           return { ok: false, error: 'already attendance' };
         }
       }
       // 출석이 없거나, 24시간이 지난경우 - 출석
-      gameUser.score += 1;
-      gameUser.attendanceScore += 1;
+      // gameUser.score += 1; // 점수가 아닌 강화 증가 횟수 +=1
+      gameUser.availableUpgrade += 1;
+      gameUser.attendanceScore += 1; // 출석으로 얻은 강화 횟수
       gameUser.lastAttendance = nowDate;
       await this.gameUserRepo.save(gameUser);
       await this.gameLogRepo.save(
@@ -147,14 +147,17 @@ export class GameService {
         where: { kakaoUserId },
       });
       if (!gameUser) return { ok: false, error: 'cannot find user' };
+      if (gameUser.availableUpgrade <= 0)
+        return { ok: false, error: 'availableUpgrade <= 0' };
 
       if (diffScore > 0) {
-        gameUser.successUpgrade += 1;
+        gameUser.successUpgrade += 1; // 강화 성공
       }
       if (diffScore < 0) {
-        gameUser.failUpgrade += 1;
+        gameUser.failUpgrade += 1; // 강화 실패
       }
-      gameUser.score += diffScore;
+      gameUser.availableUpgrade -= 1; // 강화 가능 횟수 감소
+      gameUser.score += diffScore; // 강화 후 점수
       await this.gameUserRepo.save(gameUser);
       await this.gameLogRepo.save(
         this.gameLogRepo.create({
@@ -200,8 +203,9 @@ export class GameService {
       // 문제를 맞추자.
 
       const newQs = [...gameUser.solvedQuestions.questions, submitQuizNumber];
-      gameUser.questionScore += 1;
-      gameUser.score += 1;
+      gameUser.questionScore += 1; // 문제를 통한 강화 횟수 증가
+      gameUser.availableUpgrade += 1; // 누적 강화 횟수 증가
+      // gameUser.score += 1; // 점수가 아닌 강화 증가 횟수 +=1
       gameUser.solvedQuestions.questions = newQs;
       await this.gameUserRepo.save(gameUser);
       await this.gameLogRepo.save(
