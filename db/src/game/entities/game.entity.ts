@@ -13,14 +13,14 @@ export class GameUser extends CoreEntity {
 
   @Column({ default: 1 }) // (출석 + 문제 점수 ) * 강화
   score: number;
-  // 출석 얻은 점수
+  // 출석 얻은 강화 횟수
   @Column({ default: 0 })
   attendanceScore: number;
 
   @Column({ nullable: true })
   lastAttendance: Date;
 
-  // 문제 얻은 점수
+  // 문제로 얻은 강화 횟수
   @Column({ default: 0 })
   questionScore: number;
 
@@ -35,6 +35,10 @@ export class GameUser extends CoreEntity {
   // 강화 실패 횟수
   @Column({ default: 0 })
   failUpgrade: number;
+
+  // 남은 강화 횟수
+  @Column({ default: 0 })
+  availableUpgrade: number;
 
   @OneToMany(() => GameLog, (gameLog) => gameLog.gameUser, {
     onDelete: 'CASCADE',
