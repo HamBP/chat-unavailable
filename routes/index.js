@@ -59,13 +59,7 @@ router.get("/", async (req, res, next) => {
   //       });
   //     }),
   //   ]);
-
-  //   // 응답값은 자유롭게 작성하셔도 됩니다.
-  //   res.json({
-  //     users,
-  //     conversations,
-  //     messages,
-  //   });
+	
 });
 
 // 30일 16:00 일괄 요청
@@ -170,10 +164,23 @@ router.post("/callback", async (req, res, next) => {
       });
       break;
     case "submit_quiz":
+      const quizNumber = actions.select_problem;
+      const quizAnswer = ["중국어", "사진","운동","귀가","영아","신발","수학","요리","영화","골프"];
+      if(actions.answer === quizAnswer[Number(quizNumber)-1]){
+        const quizResult = await gameDB.gameUserPSSuccess({kakaoUserId:react_user_id, submitQuizNumber:quizNumber});
+        if(quizResult.ok){
+          await libKakaoWork.sendMessage({
+          conversationId: message.conversation_id,
+          text: "☆★우승시 기프티콘을 드립니다★☆",
+          blocks: block.submit_quiz(score+1, true, solvedQuestions.questions),
+          });
+          break;
+        }
+      }
       await libKakaoWork.sendMessage({
-        conversationId: message.conversation_id,
-        text: "☆★우승시 기프티콘을 드립니다★☆",
-        blocks: block.submit_quiz(score, successUpgrade),
+      conversationId: message.conversation_id,
+      text: "☆★우승시 기프티콘을 드립니다★☆",
+      blocks: block.submit_quiz(score, false, solvedQuestions.questions),
       });
       break;
     default:

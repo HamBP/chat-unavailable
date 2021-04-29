@@ -2,10 +2,10 @@
 const template = (score, count) => [
 	{
 		type: "text",
-        text: "※ *사용 방법*을 꼭 확인해 주세요!!!",
+        text: "※ 사용 방법을 꼭 확인해 주세요!!!",
         markdown: true
 	},
-	{
+    {
 		type: 'button',
 		text: '🖐출석 하기🖐',
 		style: 'default',
@@ -93,7 +93,7 @@ exports.quiz = () => [
     },
     {
         type: "text",
-        text: "단, 맞히신 문제는 중복으로 푸실 수 없습니다!",
+        text: "단, 맞추신 문제는 중복으로 푸실 수 없습니다!",
         markdown: true,
     },
     {
@@ -167,7 +167,7 @@ exports.quiz = () => [
 ];
 
 /* 퀴즈 제출시 결과 */
-exports.submit_quiz = (score, isSuccessful) => [
+exports.submit_quiz = (score, isSuccessful, solvedQuestions) => [
 	{
 		type: 'header',
 		text: `${isSuccessful ? '정답입니다! 🎉' : '이미 풀으셨거나 틀렸습니다 💦'}`,
@@ -185,10 +185,10 @@ exports.submit_quiz = (score, isSuccessful) => [
 	},
 	{
 		type: 'description',
-		term: '푼 문제',
+		term: '이전까지 푼 문제',
 		content: {
 			type: 'text',
-			text: '${}',
+			text: `${solvedQuestions}`,
 			markdown: false,
 		},
 		accent: true,
@@ -265,7 +265,7 @@ exports.manual = () => [
 		term: '✅상품',
 		content: {
 			type: 'text',
-			text: 'maybe... 기프티콘s (연수센터 1층 스벅에서 쓸 것도 있데요..!)',
+			text: 'maybe... 기프티콘s (아래 스벅에서 쓸 것도 있데요..!)',
 			markdown: true,
 		},
 		accent: true,
