@@ -58,7 +58,7 @@ exports.gameUserReinforcement = async ({ kakaoUserId, diffScore }) => {
 };
 
 // 문제풀이 ( kakaoUserId : string, submitQuizNumber : number )
-exports.gameUserPSSuccess = async ({ kakaoUserId }) => {
+exports.gameUserPSSuccess = async ({ kakaoUserId, submitQuizNumber }) => {
   const data = {
     kakaoUserId,
     submitQuizNumber,
