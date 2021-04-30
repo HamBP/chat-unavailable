@@ -120,6 +120,7 @@ router.post("/callback", async (req, res, next) => {
   const { score, availableUpgrade } = result.gameUser;
   switch (value) {
     case "main":
+      // 점수와 강화 가능 횟수 출력
       await libKakaoWork.sendMessage({
         conversationId: message.conversation_id,
         text: "채팅이 불가능한 채널입니다.",
@@ -138,6 +139,7 @@ router.post("/callback", async (req, res, next) => {
           blocks: block.attendance(score + 1, availableUpgrade + 1),
         });
       } else {
+        // 출석 실패
         await libKakaoWork.sendMessage({
           conversationId: message.conversation_id,
           text: "채팅이 불가능한 채널입니다.",
@@ -146,6 +148,7 @@ router.post("/callback", async (req, res, next) => {
       }
       break;
     case "quiz":
+      // 퀴즈 모달 콜백
       await libKakaoWork.sendMessage({
         conversationId: message.conversation_id,
         text: "채팅이 불가능한 채널입니다.",
@@ -153,8 +156,10 @@ router.post("/callback", async (req, res, next) => {
       });
       break;
     case "upgrade":
+      // 강화
       const upgradeResult = Math.random() > 0.5;
       if (upgradeResult) {
+        // 강화 성공한 경우 +1 | DB 및 챗봇 알림
         await gameDB.gameUserReinforcement({
           kakaoUserId: react_user_id,
           diffScore: 1,
@@ -165,6 +170,7 @@ router.post("/callback", async (req, res, next) => {
           blocks: block.upgrade(score + 1, availableUpgrade + 1, true),
         });
       } else {
+        // 강화 실패한 경우 -1 | DB 및 챗봇 알림
         await gameDB.gameUserReinforcement({
           kakaoUserId: react_user_id,
           diffScore: -1,
@@ -172,7 +178,7 @@ router.post("/callback", async (req, res, next) => {
         await libKakaoWork.sendMessage({
           conversationId: message.conversation_id,
           text: "채팅이 불가능한 채널입니다.",
-          blocks: block.upgrade(score - 1, availableUpgrade, false),
+          blocks: block.upgrade(score - 1, availableUpgrade - 1, false),
         });
       }
       break;
@@ -197,6 +203,7 @@ router.post("/callback", async (req, res, next) => {
         "영화",
         "골프",
       ];
+      // 정답이 맞는 겨우
       if (actions.answer === quizAnswer[Number(quizNumber) - 1]) {
         const quizResult = await gameDB.gameUserPSSuccess({
           kakaoUserId: react_user_id,
