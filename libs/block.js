@@ -168,7 +168,7 @@ exports.quiz = () => [
 ];
 
 /* 퀴즈 제출시 결과 */
-exports.submit_quiz = (score, isSuccessful) => [
+exports.submit_quiz = (score, isSuccessful, solvedList) => [
   {
     type: "header",
     text: `${
@@ -191,7 +191,7 @@ exports.submit_quiz = (score, isSuccessful) => [
     term: "푼 문제",
     content: {
       type: "text",
-      text: "${}",
+      text: `${solvedList}`,
       markdown: false,
     },
     accent: true,

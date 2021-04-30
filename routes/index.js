@@ -117,7 +117,7 @@ router.post("/callback", async (req, res, next) => {
   const { message, actions, action_time, value, react_user_id } = req.body;
   const result = await gameDB.gameUserByKakaoId(react_user_id);
   console.log(result.gameUser);
-  const { score, availableUpgrade } = result.gameUser;
+  const { score, availableUpgrade, solvedQuestions } = result.gameUser;
   switch (value) {
     case "main":
       // 점수와 강화 가능 횟수 출력
@@ -198,6 +198,7 @@ router.post("/callback", async (req, res, next) => {
       });
       break;
     case "submit_quiz":
+      const alreadySolved = solvedQuestions["questions"];
       const quizNumber = actions.select_problem;
       const quizAnswer = [
         "중국어",
@@ -222,7 +223,18 @@ router.post("/callback", async (req, res, next) => {
           await libKakaoWork.sendMessage({
             conversationId: message.conversation_id,
             text: "채팅이 불가능한 채널입니다.",
-            blocks: block.submit_quiz(score + 1, true),
+            blocks: block.submit_quiz(
+              score + 1,
+              true,
+              alreadySolved.concat(quizNumber).toString()
+            ),
+          });
+          break;
+        } else {
+          await libKakaoWork.sendMessage({
+            conversationId: message.conversation_id,
+            text: "채팅이 불가능한 채널입니다.",
+            blocks: block.submit_quiz(score, false, alreadySolved.toString()),
           });
           break;
         }
@@ -231,7 +243,12 @@ router.post("/callback", async (req, res, next) => {
         await libKakaoWork.sendMessage({
           conversationId: message.conversation_id,
           text: "채팅이 불가능한 채널입니다.",
-          blocks: block.submit_quiz(score, false, solvedQuestions.questions),
+          blocks: block.submit_quiz(
+            score,
+            false,
+            solvedQuestions.questions,
+            alreadySolved.toString()
+          ),
         });
       }
       break;
