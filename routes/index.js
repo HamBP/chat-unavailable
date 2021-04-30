@@ -12,6 +12,7 @@ const allUserToDB = async () => {
         kakaoUserId: user.id,
         username: user["name"],
       });
+
       return { ok: true };
     })
   );
@@ -30,6 +31,7 @@ const sendTester = async () => {
       const conversation = await libKakaoWork.openConversations({
         userId: user.id,
       });
+
       const result = await gameDB.gameUserUpsert({
         kakaoUserId: user.id,
         username: user["name"],
@@ -60,10 +62,12 @@ router.get("/", async (req, res, next) => {
       const conversation = await libKakaoWork.openConversations({
         userId: user.id,
       });
+
       const result = await gameDB.gameUserUpsert({
         kakaoUserId: user.id,
         username: user["name"],
       });
+
       const gameUser = result.gameUser;
       const { score, availableUpgrade } = gameUser;
       return libKakaoWork.sendMessage({
