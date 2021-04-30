@@ -10,7 +10,7 @@ const allUserToDB = async () => {
     users.map(async (user) => {
       const result = await gameDB.gameUserUpsert({
         kakaoUserId: user.id,
-        username: user["username"],
+        username: user["name"],
       });
       return { ok: true };
     })
