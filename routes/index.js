@@ -8,7 +8,11 @@ const allUserToDB = async () => {
   let users = await libKakaoWork.getAllUserList();
   await Promise.all(
     users.map(async (user) => {
-      const result = await gameDB.gameUserUpsert({ kakaoUserId: user.id });
+      const result = await gameDB.gameUserUpsert({
+        kakaoUserId: user.id,
+        username: user["name"],
+      });
+
       return { ok: true };
     })
   );
@@ -27,7 +31,11 @@ const sendTester = async () => {
       const conversation = await libKakaoWork.openConversations({
         userId: user.id,
       });
-      const result = await gameDB.gameUserUpsert({ kakaoUserId: user.id });
+
+      const result = await gameDB.gameUserUpsert({
+        kakaoUserId: user.id,
+        username: user["name"],
+      });
       // console.log(result);
       const gameUser = result.gameUser;
       const { score, availableUpgrade } = gameUser;
@@ -54,7 +62,12 @@ router.get("/", async (req, res, next) => {
       const conversation = await libKakaoWork.openConversations({
         userId: user.id,
       });
-      const result = await gameDB.gameUserUpsert({ kakaoUserId: user.id });
+
+      const result = await gameDB.gameUserUpsert({
+        kakaoUserId: user.id,
+        username: user["name"],
+      });
+
       const gameUser = result.gameUser;
       const { score, availableUpgrade } = gameUser;
       return libKakaoWork.sendMessage({

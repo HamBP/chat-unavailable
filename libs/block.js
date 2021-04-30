@@ -220,7 +220,7 @@ exports.upgrade = (score, count, isSuccessful) => [
 exports.noUpgradeRemain = (score, count) => [
   {
     type: "header",
-    text: `강화 횟수가 없습니다!!`,
+    text: `강화 가능 횟수가 없습니다!!`,
     style: "red",
   },
   ...template(score, count),

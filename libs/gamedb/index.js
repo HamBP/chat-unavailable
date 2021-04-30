@@ -30,9 +30,10 @@ exports.gameUserByKakaoId = async (kakaoUserId) => {
 };
 
 // 유저 만들기
-exports.gameUserUpsert = async ({ kakaoUserId }) => {
+exports.gameUserUpsert = async ({ kakaoUserId, username }) => {
   const data = {
     kakaoUserId,
+    username,
   };
   const res = await gameDB.post("/gameuser/gameUserUpsert", data);
   return res.data;
@@ -58,7 +59,7 @@ exports.gameUserReinforcement = async ({ kakaoUserId, diffScore }) => {
 };
 
 // 문제풀이 ( kakaoUserId : string, submitQuizNumber : number )
-exports.gameUserPSSuccess = async ({ kakaoUserId,submitQuizNumber }) => {
+exports.gameUserPSSuccess = async ({ kakaoUserId, submitQuizNumber }) => {
   const data = {
     kakaoUserId,
     submitQuizNumber,
