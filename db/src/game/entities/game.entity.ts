@@ -11,6 +11,9 @@ export class GameUser extends CoreEntity {
   @Column({ unique: true })
   kakaoUserId: string;
 
+  @Column({ nullable: true })
+  username?: string;
+
   @Column({ default: 1 }) // (출석 + 문제 점수 ) * 강화
   score: number;
   // 출석 얻은 강화 횟수

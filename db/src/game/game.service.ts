@@ -71,6 +71,7 @@ export class GameService {
   // 사용자 생성
   async gameUserUpsert({
     kakaoUserId,
+    username,
   }: GamerUserUpsertInput): Promise<GamerUserUpsertOutput> {
     try {
       let gameUser = await this.gameUserRepo.findOne({
@@ -81,6 +82,7 @@ export class GameService {
       gameUser = await this.gameUserRepo.save(
         this.gameUserRepo.create({
           kakaoUserId,
+          username,
           solvedQuestions: { questions: [] },
         }),
       );

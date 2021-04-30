@@ -2,6 +2,7 @@ import { GameUser } from '../entities/game.entity';
 
 export class GamerUserUpsertInput {
   kakaoUserId: string;
+  username?: string;
 }
 export class GamerUserUpsertOutput {
   ok: boolean;

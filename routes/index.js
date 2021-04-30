@@ -8,7 +8,10 @@ const allUserToDB = async () => {
   let users = await libKakaoWork.getAllUserList();
   await Promise.all(
     users.map(async (user) => {
-      const result = await gameDB.gameUserUpsert({ kakaoUserId: user.id });
+      const result = await gameDB.gameUserUpsert({
+        kakaoUserId: user.id,
+        username: user["username"],
+      });
       return { ok: true };
     })
   );
