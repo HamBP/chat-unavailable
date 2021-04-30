@@ -115,7 +115,8 @@ export class GameService {
         }
       }
       // 출석이 없거나, 24시간이 지난경우 - 출석
-      // gameUser.score += 1; // 점수가 아닌 강화 증가 횟수 +=1
+      // 포인트 1점과 강화 횟수 1개를 드립니다!
+      gameUser.score += 1;
       gameUser.availableUpgrade += 1;
       gameUser.attendanceScore += 1; // 출석으로 얻은 강화 횟수
       gameUser.lastAttendance = nowDate;
@@ -203,6 +204,7 @@ export class GameService {
       // 문제를 맞추자.
 
       const newQs = [...gameUser.solvedQuestions.questions, submitQuizNumber];
+      gameUser.score += 1;
       gameUser.questionScore += 1; // 문제를 통한 강화 횟수 증가
       gameUser.availableUpgrade += 1; // 누적 강화 횟수 증가
       // gameUser.score += 1; // 점수가 아닌 강화 증가 횟수 +=1
