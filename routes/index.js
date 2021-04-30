@@ -217,24 +217,23 @@ router.post("/callback", async (req, res, next) => {
           kakaoUserId: react_user_id,
           submitQuizNumber: quizNumber,
         });
+        // 최초 1회만 인정
         if (quizResult.ok) {
           await libKakaoWork.sendMessage({
             conversationId: message.conversation_id,
             text: "채팅이 불가능한 채널입니다.",
-            blocks: block.submit_quiz(
-              score + 1,
-              true,
-              solvedQuestions.questions
-            ),
+            blocks: block.submit_quiz(score + 1, true),
           });
           break;
         }
+      } else {
+        // 정답이 틀린 경우
+        await libKakaoWork.sendMessage({
+          conversationId: message.conversation_id,
+          text: "채팅이 불가능한 채널입니다.",
+          blocks: block.submit_quiz(score, false, solvedQuestions.questions),
+        });
       }
-      await libKakaoWork.sendMessage({
-        conversationId: message.conversation_id,
-        text: "채팅이 불가능한 채널입니다.",
-        blocks: block.submit_quiz(score, false, solvedQuestions.questions),
-      });
       break;
     default:
   }
