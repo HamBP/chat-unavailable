@@ -23,7 +23,7 @@ const sendTester = async () => {
 
   // ----- 🚀 아래 부분 주석처리시 - 전체 메시지 -----
   users = users.filter(
-    (user) => user.name === "김도영" || user.name === "송준영"
+    (user) => user.name === "김도영" || user.name === "김경환" || user.name === "송준영" || user.name === "정성진"|| user.name === "정윤석"
   );
   // ----------------------------------------------------
   const messages = await Promise.all(

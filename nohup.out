@@ -1,0 +1,15 @@
+
+> swmaestro_kakaowork_example@0.0.1 start:main /workspace/chat_unavailable
+> NODE_ENV=development NODE_CONFIG_DIR=./configs/app node app
+
+Example app listening on port 443!
+[0]user cursor:  Y3Vyc29yX2lkPTI2MTIyMDcmbGltaXQ9MTAw
+[0]user len:  100
+[1]user cursor:  null
+[1]user len:  91
+all User len :  191
+[0]user cursor:  Y3Vyc29yX2lkPTI2MTIyMDcmbGltaXQ9MTAw
+[0]user len:  100
+[1]user cursor:  null
+[1]user len:  91
+all User len :  191
