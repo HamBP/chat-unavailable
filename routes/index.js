@@ -258,4 +258,11 @@ router.post("/callback", async (req, res, next) => {
   res.json({ result: true });
 });
 
+router.get("/rank", async (req, res, next) => {
+  const data = await gameDB.getRank();
+  res.json({
+    data,
+  });
+});
+
 module.exports = router;
