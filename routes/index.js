@@ -18,7 +18,9 @@ const test = async () => {
   let users = await libKakaoWork.getAllUserList();
 
   // ----- 🚀 아래 부분 주석처리시 - 전체 메시지 -----
-  users = users.filter((user) => user.name === "김도영");
+  users = users.filter(
+    (user) => user.name === "김도영" || user.name === "송준영"
+  );
   // ----------------------------------------------------
   const messages = await Promise.all(
     users.map(async (user) => {
@@ -40,6 +42,7 @@ const test = async () => {
 };
 const init = async () => {
   await allUserToDB();
+  // 지울것!
   await test();
 };
 init();
@@ -56,14 +59,14 @@ router.get("/", async (req, res, next) => {
         userId: user.id,
       });
       const result = await gameDB.gameUserUpsert({ kakaoUserId: user.id });
-      console.log(result);
+      // console.log(result);
       const gameUser = result.gameUser;
-      const { score, successUpgrade } = gameUser;
+      const { score, availableUpgrade } = gameUser;
 
       return libKakaoWork.sendMessage({
         conversationId: conversation.id,
         text: "채팅이 불가능한 채널입니다.",
-        blocks: block.main(score, successUpgrade),
+        blocks: block.main(score, availableUpgrade),
       });
     })
   );
@@ -97,7 +100,6 @@ router.post("/chatbot", async (req, res, next) => {
 router.post("/request", async (req, res, next) => {
   console.log(req.body);
   const { message, value } = req.body;
-
   switch (value) {
     case "quiz_modal":
       return res.json({
@@ -106,7 +108,6 @@ router.post("/request", async (req, res, next) => {
       break;
     default:
   }
-
   res.json({});
 });
 
@@ -114,35 +115,33 @@ router.post("/request", async (req, res, next) => {
 router.post("/callback", async (req, res, next) => {
   console.log(req.body);
   const { message, actions, action_time, value, react_user_id } = req.body;
-
   const result = await gameDB.gameUserByKakaoId(react_user_id);
   console.log(result.gameUser);
-  const { score, successUpgrade } = result.gameUser;
-
+  const { score, availableUpgrade } = result.gameUser;
   switch (value) {
     case "main":
       await libKakaoWork.sendMessage({
         conversationId: message.conversation_id,
         text: "채팅이 불가능한 채널입니다.",
-        blocks: block.main(score, successUpgrade),
+        blocks: block.main(score, availableUpgrade),
       });
       break;
-
     case "attendance":
       const result = await gameDB.gameUserAttendanceCheck({
         kakaoUserId: react_user_id,
       });
       if (result.ok) {
+        // 출석 한 경우
         await libKakaoWork.sendMessage({
           conversationId: message.conversation_id,
           text: "채팅이 불가능한 채널입니다.",
-          blocks: block.attendance(score + 1, successUpgrade),
+          blocks: block.attendance(score + 1, availableUpgrade + 1),
         });
       } else {
         await libKakaoWork.sendMessage({
           conversationId: message.conversation_id,
           text: "채팅이 불가능한 채널입니다.",
-          blocks: block.attendance_fail(score, successUpgrade),
+          blocks: block.attendance_fail(score, availableUpgrade),
         });
       }
       break;
@@ -163,7 +162,7 @@ router.post("/callback", async (req, res, next) => {
         await libKakaoWork.sendMessage({
           conversationId: message.conversation_id,
           text: "채팅이 불가능한 채널입니다.",
-          blocks: block.upgrade(score + 1, successUpgrade + 1, true),
+          blocks: block.upgrade(score + 1, availableUpgrade + 1, true),
         });
       } else {
         await gameDB.gameUserReinforcement({
@@ -173,7 +172,7 @@ router.post("/callback", async (req, res, next) => {
         await libKakaoWork.sendMessage({
           conversationId: message.conversation_id,
           text: "채팅이 불가능한 채널입니다.",
-          blocks: block.upgrade(score - 1, successUpgrade, false),
+          blocks: block.upgrade(score - 1, availableUpgrade, false),
         });
       }
       break;
