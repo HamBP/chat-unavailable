@@ -14,7 +14,7 @@ const allUserToDB = async () => {
   );
 };
 
-const test = async () => {
+const sendTester = async () => {
   let users = await libKakaoWork.getAllUserList();
 
   // ----- 🚀 아래 부분 주석처리시 - 전체 메시지 -----
@@ -42,16 +42,12 @@ const test = async () => {
 };
 const init = async () => {
   await allUserToDB();
-  // 지울것!
-  await test();
+  await sendTester(); // 실행시 테스터들에게 메시지 보냄
 };
 init();
 
 router.get("/", async (req, res, next) => {
-  // 유저 목록 검색 (1)
-  const users = await libKakaoWork.getUserList();
-
-  console.log("생성되는 유저 수 : ", users.length);
+  const users = await libKakaoWork.getAllUserList(); // 유저 목록 검색 (1)
   // 검색된 모든 유저에게 각각 채팅방 생성 (2)
   const messages = await Promise.all(
     users.map(async (user) => {
@@ -59,10 +55,8 @@ router.get("/", async (req, res, next) => {
         userId: user.id,
       });
       const result = await gameDB.gameUserUpsert({ kakaoUserId: user.id });
-      // console.log(result);
       const gameUser = result.gameUser;
       const { score, availableUpgrade } = gameUser;
-
       return libKakaoWork.sendMessage({
         conversationId: conversation.id,
         text: "채팅이 불가능한 채널입니다.",
@@ -70,8 +64,6 @@ router.get("/", async (req, res, next) => {
       });
     })
   );
-
-  // 응답값은 자유롭게 작성하셔도 됩니다.
   res.json({
     users,
     messages,
@@ -80,21 +72,27 @@ router.get("/", async (req, res, next) => {
 
 // 30일 16:00 일괄 요청
 router.post("/chatbot", async (req, res, next) => {
-  const users = await libKakaoWork.getUserList();
-  const conversations = await Promise.all(
-    users.map((user) => libKakaoWork.openConversations({ userId: user.id }))
-  );
-  const messages = await Promise.all([
-    conversations.map((conversation) =>
-      libKakaoWork.sendMessage({
+  const users = await libKakaoWork.getAllUserList(); // 유저 목록 검색 (1)
+  // 검색된 모든 유저에게 각각 채팅방 생성 (2)
+  const messages = await Promise.all(
+    users.map(async (user) => {
+      const conversation = await libKakaoWork.openConversations({
+        userId: user.id,
+      });
+      const result = await gameDB.gameUserUpsert({ kakaoUserId: user.id });
+      const gameUser = result.gameUser;
+      const { score, availableUpgrade } = gameUser;
+      return libKakaoWork.sendMessage({
         conversationId: conversation.id,
         text: "채팅이 불가능한 채널입니다.",
-        blocks: block.main(5, 3),
-      })
-    ),
-  ]);
-
-  res.json({ result: true });
+        blocks: block.main(score, availableUpgrade),
+      });
+    })
+  );
+  res.json({
+    users,
+    messages,
+  });
 });
 
 router.post("/request", async (req, res, next) => {
