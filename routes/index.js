@@ -157,6 +157,14 @@ router.post("/callback", async (req, res, next) => {
       break;
     case "upgrade":
       // 강화
+      if (availableUpgrade <= 0) {
+        await libKakaoWork.sendMessage({
+          conversationId: message.conversation_id,
+          text: "채팅이 불가능한 채널입니다.",
+          blocks: block.noUpgradeRemain(score, availableUpgrade),
+        });
+        break;
+      }
       const upgradeResult = Math.random() > 0.5;
       if (upgradeResult) {
         // 강화 성공한 경우 +1 | DB 및 챗봇 알림
@@ -167,7 +175,7 @@ router.post("/callback", async (req, res, next) => {
         await libKakaoWork.sendMessage({
           conversationId: message.conversation_id,
           text: "채팅이 불가능한 채널입니다.",
-          blocks: block.upgrade(score + 1, availableUpgrade + 1, true),
+          blocks: block.upgrade(score + 1, availableUpgrade - 1, true),
         });
       } else {
         // 강화 실패한 경우 -1 | DB 및 챗봇 알림
